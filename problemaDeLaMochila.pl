@@ -13,7 +13,7 @@ despensa(5,chocolate,1,2000).
 despensa(6,fritos,2,2000).
 
 %tamaño de la poblacion,tamaño de la mochila, generaciones a simular 
-simulacion(1,100,6,500).
+simulacion(1,50,6,100).
 
 %crear mochila aleatorea
 crearMochila(0, []).
@@ -96,9 +96,10 @@ reproducirPoblacion([P|[S|R]],Hijos):-
     reproducirPoblacion(R,Otros),
     append(Otros,[H1|[H2]],Hijos).
 
-repro:-
-    crearPoblacionInicial(P),
-    reproducirPoblacion(P,H).
+listaVacia([]).
+listaVacia([P|R]):-
+    P == 0,
+    listaVacia(R).
 
 %  calcularPesoYEnergia([1,0,0,0,0,0],P,C,1).
 calcularPesoYEnergia([],0,0,7).
@@ -115,20 +116,103 @@ fitness(X,F) :-
     P > 0,
     F is C/P.
 
-%obtenerFitnesMayor:-
-%    crearPoblacionInicial(P),
-%    fitnessMasAlto(P,0,PM,1),
-%    nl,
-%    fitness(PM,FM),
-%    write(FM),
-%    write(PM).
-%fitnessPoblacion([]).
-%fitnessPoblacion([X|R]) :-
-%    fitness(X,F),
-%    write(" "),
-%    write(F),
-%    write(" "),
-%    fitnessPoblacion(R).
+% fitnessMejor(600,500,M).
+fitnessMejor(F,FM,FM2):-
+    F > FM,
+    FM2 is F.
+fitnessMejor(F,FM,FM2):-
+    not(F > FM),
+    FM2 is FM.
+
+mejorMochila([],MT,MT,0).
+mejorMochila([M1|[M2|R]],MM,MA,X):-
+    %nl,
+    fitness(M1,F1),
+    fitness(M2,F2),
+    fitness(MM,FM2),
+    %nl, write("molecula 1 "), write(M1), nl, write(F1), nl, write("molecula 2 "), write(M2), nl, write(F2),
+    fitnessMejor(F1,F2,MF), 
+    fitnessMejor(MF,FM2,FM3),
+    %nl,
+    MF = F1,
+    MF = FM3,
+    %write("fitness mayor "), write(FM3),
+    nl,nl, write("molecula 1 "), write(M1), nl, write(F1), nl, write("molecula 2 "), write(M2), nl, write(F2),nl,write("fitness mayor "), write(FM3),
+    mejorMochila(R,M1,MA,X1).
+mejorMochila([M1|[M2|R]],MM,MA,X):-
+    %nl,
+    fitness(M1,F1),
+    fitness(M2,F2),
+    fitness(MM,FM2),
+    %nl, write("molecula 1 "), write(M1), nl, write(F1), nl, write("molecula 2 "), write(M2), nl, write(F2),
+    fitnessMejor(F1,F2,MF), 
+    fitnessMejor(MF,FM2,FM3),
+    %nl,
+    MF = F2,
+    MF = FM3,
+    %write("fitness mayor "), write(FM3),
+    nl,nl, write("molecula 1 "), write(M1), nl, write(F1), nl, write("molecula 2 "), write(M2), nl, write(F2),nl,write("fitness mayor "), write(FM3),
+    mejorMochila(R,M2,MA,X).
+mejorMochila([M1|[M2|R]],MM,MA,X):-
+    fitness(M1,F1),
+    fitness(M2,F2),
+    fitness(MM,FM2),
+    fitnessMejor(F1,F2,MF), 
+    fitnessMejor(MF,FM2,FM3),
+    FM2 = FM3,
+    nl,nl, write("molecula 1 "), write(M1), nl, write(F1), nl, write("molecula 2 "), write(M2), nl, write(F2),nl,write("fitness mayor "), write(FM3),
+    mejorMochila(R,MM,MA,X).
+
+obtenerFitnesMayor(P,I,M):-
+    mejorMochila(P,I,M,0),
+    nl,nl,write("mejor mochila "),write(M),nl,
+    fitness(M,F),
+    write("fitness mayor "), write(F).
+ 
+inicio:-
+    write("generacion "), write(1),
+    crearPoblacionInicial(P),
+    simulacion(1,_,_,GT),
+    obtenerFitnesMayor(P,[1,0,0,0,0,0],MejorMolecula),
+    reproduccionYSeleccion(P,MejorMolecula,2,GT).
+
+reproduccionYSeleccion(_,_,GT,GT).
+reproduccionYSeleccion(P,M1,G,GT):-
+    nl, nl, write("generacion "), write(G),nl,nl,
+    reproducirPoblacion(P,H),
+    obtenerFitnesMayor(H,M1,M2),
+    nl, write("generacion "), write(G),nl,nl,
+    write("mejor individuo "), write(M2),nl,nl,
+    G1 is G+1,
+    reproduccionYSeleccion(H,M2,G1,GT).
+
+
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+% codigo descartado
+
+fitnessPoblacion([]).
+fitnessPoblacion([X|R]) :-
+    fitness(X,F),
+    nl,
+    write(F),
+    nl,
+    fitnessPoblacion(R).
 
 % mochilaConFitness([[1,0,0,0,0,0],[1,0,0,0,0,0],[1,0,0,0,0,0]],Nuev).
 mochilaConFitness([],[]).
@@ -153,21 +237,7 @@ evaluarPoblacionInicial:-
     mochilaConFitness(P,MYF),
     mostrarPoblacion(MYF).
 
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-fitnessMasAlto(_,_,_,101).
+fitnessMasAlto([],0,0,101).
 fitnessMasAlto([P|R],FitnessMayor, PMejor, N):-
     fitness(P,F),
     F > FitnessMayor,
