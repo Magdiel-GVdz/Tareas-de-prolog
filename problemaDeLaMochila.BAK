@@ -1,0 +1,79 @@
+% Autor:
+% Fecha: 09/11/2022
+
+% Implementar el algoritmo genetico en prolog para resolver el problema de la mochila
+
+%comida(nombre,peso,calorias)
+comida(pan,4,1000).
+comida(refresco,8,5000).
+comida(galletas,4,2000).
+comida(manzana,5,1000).
+comida(chocolate,1,2000).
+comida(fritos,2,2000).
+
+%[comida(pan,4,1000),comida(refresco,8,5000),comida(galletas,4,2000),comida(manzana,5,1000),comida(chocolate,1,2000),comida(fritos,2,2000)]
+
+%peso
+peso([],0)
+peso([comida(_,P,_)|Resto],X):- peso(Resto,RestP),
+                                X is P + RestP.
+                              
+%calorias()
+calorias([],0).
+calorias([comida(_,_,C) | Resto], X) :- calorias(Resto,RestC),
+                                        X is C + RestC.
+                                        
+
+%partir(Todo, Parte1, Parte2)
+partir([Y,Z|Zs], [Y], [Z|Zs]).                     % caso base
+partir([Y|Xs], [Y|Ys], Zs):-
+                             partir(Xs,Ys,Zs).     % caso recursivo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%posiblesMochilas
+posiblesMochilas([],[]).
+posiblesMochilas([Objeto|RestX],[Objeto|RestY]) :- posiblesMochilas(RestX,RestY).
+posiblesMochilas(X,[_|RestY]) :- posiblesMochilas(X,RestY).
+
+mochilaPermitida(Comidas,Capacidad,Mochila):-
+  posiblesMochilas(Mochila,Comidas),
+  peso(Mochila,Peso),
+  Peso =< Capacidad.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

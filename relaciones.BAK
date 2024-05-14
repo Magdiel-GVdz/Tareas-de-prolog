@@ -1,0 +1,64 @@
+% Autor: Magdiel Guillermo Valdez
+% Fecha: 31/08/2022
+
+%predicados
+matrimonio(juan,maria).
+matrimonio(mario,martha).
+matrimonio(jose,teresa).
+matrimonio(valentin,josefa).
+matrimonio(andres,dolores).
+
+hijo(juan,andres).
+hijo(rogelio,andres).
+hijo(noe,andres).
+
+hijo(luis,valentin).
+hijo(ismael,valentin).
+hijo(maria,valentin).
+
+hijo(mario,juan).
+hijo(jose,juan).
+
+hijo(ricardo,mario).
+hijo(roberto,jose).
+
+%clausulas
+hermano(PERSONA,HERMANO):- hijo(PERSONA,PADRE), % se encuentra al padre de la persoina
+                           hijo(HERMANO,PADRE), % se encuentra a todos los hijos
+                           PERSONA \= HERMANO. % excluyes a la persona entre los hermanos
+%madre
+madre(PERSONA,MADRE):- hijo(PERSONA,PADRE),
+                       matrimonio(PADRE,MADRE).
+
+%tios maternos
+tio(PERSONA,TIO):- madre(PERSONA,MADRE),
+                   hermano(MADRE,TIO).
+                   
+%tio paterno
+tio(PERSONA,TIO):- hijo(PERSONA,PADRE),
+                   hermano(PADRE,TIO).
+
+%abuelos
+%paternos
+abuelo(PERSONA,ABUELO):- hijo(PERSONA,PADRE),  % se encuentra al padre de la persona
+                         hijo(PADRE,ABUELO).   % se encuentra al padre del padre
+abuelo(PERSONA,ABUELA):- hijo(PERSONA,PADRE),  % se encuentra al padre de la persona
+                         madre(PADRE,ABUELA).  % se encuentra a la madre del padre
+%maternos
+abuelo(PERSONA,ABUELO):- madre(PERSONA,MADRE), % se encuentra a la madre de la persona
+                         hijo(MADRE,ABUELO).   % se encuentra al padre de la madre
+abuelo(PERSONA,ABUELA):- madre(PERSONA,MADRE), % se encuentra a la madre de la persoa
+                         madre(MADRE,ABUELA).  % se encuentra a la madre de la madre
+
+%nieto
+nieto(PERSONA,NIETO):- hijo(HIJO,PERSONA),
+                       hijo(NIETO,HIJO).
+nieto(PERSONA,NIETO):- madre(HIJO,PERSONA),
+                       hijo(NIETO,HIJO).
+
+%primo
+primo(PERSONA,PRIMO):- tio(PERSONA,TIO),
+                      hijo(PRIMO,TIO).
+
+%sobrino
+sobrino(PERSONA,SOBRINO):- tio(SOBRINO,PERSONA).

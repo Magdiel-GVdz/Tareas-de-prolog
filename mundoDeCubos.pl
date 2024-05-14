@@ -1,0 +1,168 @@
+% Autor: Magdiel GV
+% Fecha: 07/09/2022
+
+:- dynamic sobre/2.
+
+% clausula
+sobre(a,piso).
+sobre(b,a).
+sobre(c,b).
+sobre(d,c).
+sobre(e,d).
+sobre(nada,e).
+sobre(f,piso).
+sobre(g,f).
+sobre(h,g).
+sobre(i,h).
+sobre(nada,i).
+sobre(j,piso).
+sobre(nada,j).
+
+
+
+% predicados
+quitar(Y,X):- % precondiciones
+              sobre(Y,X),
+              sobre(nada,Y),
+              % acciones
+              retract(sobre(Y,X)),
+              assert(sobre(Y,piso)),
+              assert(sobre(nada,X)),
+              % mensajes
+              write('Se quito el bloque '),
+              write(Y),
+              write(' del bloque '),
+              writeln(X).
+
+quitar(Y,X):- % precondiciones
+              sobre(Y,X),
+              sobre(Z,Y),
+              % acciones
+              quitar(Z,Y),
+              quitar(Y,X).
+
+% escenario 1
+colocar(Y,X):- % precondiciones
+               sobre(nada,X),
+               sobre(nada,Y),
+               sobre(Y,piso),
+               % acciones
+               assert(sobre(Y,X)),
+               retract(sobre(nada,X)),
+               retract(sobre(Y,piso)),
+               % mensajes
+               write('Se coloco el bloque '),
+               write(Y),
+               write(' sobre el bloque '),
+               writeln(X).
+
+% escenario 2
+colocar(Y,X):- % precondiciones
+               sobre(nada,X),
+               sobre(nada,Y),
+               sobre(Y,Z),
+               % acciones
+               assert(sobre(Y,X)),
+               retract(sobre(nada,X)),
+               retract(sobre(Y,Z)),
+               assert(sobre(nada,Z)),
+               % mensajes
+               write('Se coloco el bloque '),
+               write(Y),
+               write(' sobre el bloque '),
+               writeln(X).
+
+% escenario 3
+colocar(Y,X):- % precondiciones
+               sobre(Z,Y),
+               sobre(Y,piso),
+               sobre(nada,X),
+               % acciones
+               quitar(Z,Y),
+               colocar(Y,X),
+               % mensajes
+               write('Se coloco el bloque '),
+               write(Y),
+               write(' sobre el bloque '),
+               writeln(X).
+               
+% escenario 4
+colocar(Y,X):- % precondiciones
+               sobre(nada,X),
+               sobre(Z,Y),
+               sobre(Y,W),
+               % acciones
+               quitar(Z,Y),
+               colocar(Y,X),
+               % mensajes
+               write('Se coloco el bloque '),
+               write(Y),
+               write(' sobre el bloque '),
+               writeln(X).
+               
+% escenario 5
+colocar(Y,X):- % precondiciones
+               sobre(Y,piso),
+               sobre(Z,X),
+               % acciones
+               quitar(Z,X),
+               colocar(Y,X),
+               % mensajes
+               write('Se coloco el bloque '),
+               write(Y),
+               write(' sobre el bloque '),
+               writeln(X).
+
+% escenario 6
+colocar(Y,X):- % precondiciones
+                sobre(Y,W),
+                sobre(Z,X),
+                % acciones
+                quitar(Y,W),
+                quitar(Z,X),
+                colocar(Y,X),
+                % mensajes
+                write('Se coloco el bloque '),
+                write(Y),
+                write(' sobre el bloque '),
+                writeln(X).
+                
+% escenario 7
+colocar(Y,X):- % precondiciones
+                sobre(Y,piso),
+                sobre(Z,Y),
+                sobre(W,X),
+                % acciones
+                quitar(W,X),
+                quitar(Z,Y),
+                colocar(Y,X),
+                % mensajes
+                write('Se coloco el bloque '),
+                write(Y),
+                write(' sobre el bloque '),
+                writeln(X).
+                
+% escenario 8
+colocar(Y,X):- % precondiciones
+                sobre(Y,V),
+                sobre(Z,Y),
+                sobre(W,X),
+                % acciones
+                quitar(W,X),
+                quitar(Z,Y),
+                colocar(Y,X),
+                % mensajes
+                write('Se coloco el bloque '),
+                write(Y),
+                write(' sobre el bloque '),
+                writeln(X).
+               
+                
+                
+                
+                
+
+
+
+
+
